@@ -1,0 +1,24 @@
+syntax = "proto3";
+package grpc_stream_x2;
+
+
+
+service FileTransferService {
+    rpc Case4(stream FileRequest) returns (stream FileResponse);
+    rpc Case5(BatchRequest) returns (FileResponse);
+}
+
+message FileRequest {
+    bytes image_1 = 1;
+    bytes image_2 = 2;
+    string filename1 = 3;
+    string filename2 = 4;
+}
+
+message BatchRequest {
+  repeated FileRequest images = 1;
+}
+
+message FileResponse {
+    string message = 1;
+}
