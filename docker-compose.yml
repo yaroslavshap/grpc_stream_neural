@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  server_cont:
+    build: server_d
+    ports:
+      - "8012:50053"
+    volumes:
+      - ./server_d:/app
+#    restart: always
+  client_cont:
+    build: client_d
+    ports:
+      - "8013:50053"
+    volumes:
+      - ./client_d:/app
+    depends_on:
+      - server_cont
