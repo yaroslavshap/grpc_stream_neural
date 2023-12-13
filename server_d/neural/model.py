@@ -35,10 +35,9 @@ class Subnet1(nn.Module):
         self.hidden_6 = nn.AdaptiveAvgPool2d((1, 1))
 
         self.hidden_7 = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(256, 2048),
+            nn.Conv2d(256, 2048, kernel_size=(1, 1), stride=(1, 1)),
             nn.LeakyReLU(),
-            nn.Linear(2048, 64 * 128)  # 64 * 128
+            nn.Conv2d(2048, 64 * 128, kernel_size=(1, 1), stride=(1, 1))
         )
 
     def forward_once(self, x):

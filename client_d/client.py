@@ -59,9 +59,10 @@ def run_client_case5(stub):
 
 
 def run():
+    port = 'localhost:50053'
     # Устанавливаем максимальный размер сообщения на клиенте в 10 МБ
     max_message_length = 2000 * 1024 * 1024  # 10 МБ в байтах
-    channel = grpc.insecure_channel('localhost:50053', options=(('grpc.max_send_message_length', max_message_length),))
+    channel = grpc.insecure_channel(port, options=(('grpc.max_send_message_length', max_message_length),))
     stub = FileTransferServiceStub(channel)
     # path_l = "/Users/aroslavsapoval/myProjects/data/images_grpc_512/left"
     # path_r = "/Users/aroslavsapoval/myProjects/data/images_grpc_512/right"

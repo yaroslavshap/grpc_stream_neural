@@ -8,7 +8,7 @@ import os
 import torch
 from neural.model import CommonNet
 import numpy as np
-print("я тут")
+import matplotlib.pyplot as plt
 
 
 class FileTransferService(my_pb2_grpc.FileTransferServiceServicer):
@@ -40,14 +40,21 @@ class FileTransferService(my_pb2_grpc.FileTransferServiceServicer):
                 pred = pred.squeeze(0)
                 pred = pred[..., 100:, :].detach().cpu().numpy()
 
-            pred_img = Image.fromarray(255 * pred.astype(np.uint8))
+
             self.image_name1 = r.filename1
             self.image_name2 = r.filename2
             self.merged_image_name = self.image_name1 + "_" + self.image_name2
             output_folder = f"merged_image_case_{case_nom}"
+            output_folder2 = f"pred_image_case_{case_nom}"
             os.makedirs(output_folder, exist_ok=True)
             output_path = os.path.join(output_folder, self.merged_image_name)
-            pred_img.save(output_path, format="PNG")
+            pred_jet_path = os.path.join(output_folder2, self.merged_image_name + '_pred_jet.png')
+            # Объедините изображения
+            combined_image = Image.blend(Image.fromarray(left_test.astype(np.uint8)),
+                                         Image.fromarray(plt.imread(pred_jet_path)), alpha=0.5)
+
+            combined_image.save(output_path, format='PNG')
+
             otv.append(r.filename1)
         return otv
 
@@ -58,12 +65,15 @@ class FileTransferService(my_pb2_grpc.FileTransferServiceServicer):
 
 
 def run_server():
+    # port = '0.0.0.0:50053'
+    port = 'localhost:50053'
+    # port = '192.168.3.102:50053'
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10),
                          options=[('grpc.max_receive_message_length', 2000 * 1024 * 1024)])
     my_pb2_grpc.add_FileTransferServiceServicer_to_server(FileTransferService(), server)
-    server.add_insecure_port('[::]:50053')
+    server.add_insecure_port(port)
     server.start()
-    print("Сервер запущен на порту 50053...", flush=True)
+    print(f"Сервер запущен на порту {port}", flush=True)
     server.wait_for_termination()
 
 
