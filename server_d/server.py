@@ -19,7 +19,7 @@ class FileTransferService(my_pb2_grpc.FileTransferServiceServicer):
         self.device = torch.device('cpu')
         self.model = CommonNet()
         self.model.to(self.device)
-        self.model.load_state_dict(torch.load('ves.pth'))
+        self.model.load_state_dict(torch.load('/Users/aroslavsapoval/myProjects/Practic3/GRPC_stream_neural/server_d/ves.pth'))
         self.model.eval()
 
     def work_with_img(self, request, context, case_nom):
@@ -66,7 +66,7 @@ class FileTransferService(my_pb2_grpc.FileTransferServiceServicer):
 
 def run_server():
     # port = '0.0.0.0:50053'
-    port = 'localhost:50053'
+    port = 'localhost:50054'
     # port = '192.168.3.102:50053'
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10),
                          options=[('grpc.max_receive_message_length', 2000 * 1024 * 1024)])
